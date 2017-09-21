@@ -3,13 +3,25 @@
 This GitHub repo will serve as the live demo for a talk I gave to the [Chicago React Meetup](https://www.meetup.com/React-Chicago/events/238418830/) 
 on September 27, 2017.
 
-The purpose of my presentation ([slides available here]()) is to introduce people to MobX.
+The purpose of my presentation ([slides available here](https://slidr.io/arthurakay/mobx-and-react#1)) is to introduce people to MobX.
 
 I also wrote up a synopsis of my presentation [on my blog](https://www.akawebdesign.com/2017/09/21/using-mobx-react/).
 
 ## Technical Bits
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+
+Want to run this thing?
+
+    // install dependencies
+    yarn
+    
+    // fire this thang up
+    yarn start
+
+...then be prepared to be disappointed as most of my live demo is going to live in devtools JS console!
+
+### Add MobX to your own React project
 
 If you're looking to add `mobx` to your own project, you'll start by simply running:
 
@@ -39,6 +51,10 @@ them out of the box yet. I'm assuming you are using Babel/Webpack, so you'll hav
     }
 
 Something like that. Every webpack/babel setup is different, so your mileage may vary.
+
+## My Live Demo
+
+Using this project as an example, let's go over some key concepts:
 
 ### `@observable`
 
