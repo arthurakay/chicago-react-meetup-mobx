@@ -13,8 +13,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 If you're looking to add `mobx` to your own project, you'll start by simply running:
 
-    yarn add mobx-react
+    yarn add mobx mobx-react
     
+This will install both `mobx` and `mobx-react` packages.
+
 
 
 ### @observable
