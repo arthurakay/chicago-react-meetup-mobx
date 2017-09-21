@@ -17,22 +17,110 @@ If you're looking to add `mobx` to your own project, you'll start by simply runn
     
 This will install both `mobx` and `mobx-react` packages.
 
+### Start Coding!
 
+Except... wait.
 
-### @observable
+I talk a lot about how much I love [ES7 decorators](http://technologyadvice.github.io/es7-decorators-babel6/), yet you can't use 
+them out of the box yet. I'm assuming you are using Babel/Webpack, so you'll have install one more thing:
+
+    yarn add babel-plugin-transform-decorators-legacy
+
+...and you'll have to configure that inside webpack:
+
+    {
+        test: /\.(js|jsx)$/,
+        include: paths.appSrc,
+        loader: require.resolve('babel-loader'),
+        options: {
+            // THIS THING BELOW
+            plugins: ['transform-decorators-legacy']
+        }
+    }
+
+Something like that. Every webpack/babel setup is different, so your mileage may vary.
+
+### `@observable`
 
 Any value can be observable.
 
+Let's start in `/src/stores/Users.js`:
 
+    import {observable} from 'mobx';
+    
+    class Users {
+        @observable data = [];
+    }
+    
+    export default new Users();
 
-### @observer
+We have created an object containing an observable array of data. For now this contains no data, but we'll come back to that in a moment. 
+
+### `<Provider />`, `@observer` and `@inject`
 
 Any React component can be an observer. 
 
 As such, any component decorated as an observer will automatically re-render when changes are detected on observable values.
 
+Let's take a look at `/src/App.js`:
 
-### @computed
+    import UserStore from './stores/Users';
+
+    <Provider userStore={UserStore}>
+        // children (observers) will go here shortly!
+    </Provider>
+
+Much like the approach Redux takes, we need a way to share the data contained in our "store" to any components who care to observe it. 
+The `<Provider />` component simply allows us to define a prop "userStore" which will be magically available to deeply nested sub-components.
+
+Next let's look at `/src/views/UserList.js`:
+
+    import {observer, inject} from 'mobx-react';
+    
+    @inject('userStore') @observer
+    class UserList extends React.Component {
+        render() {
+            const users = [];
+    
+            for (let i = 0; i < this.props.userStore.data.length; i++) {
+                let user = this.props.userStore.data[i];
+                users.push(<li key={i}>{user.fullName}</li>);
+            }
+    
+            return (
+                <div id="UserList">
+                    <h2>Users</h2>
+    
+                    <ul>
+                        {users}
+                    </ul>
+                </div>
+            );
+        }
+    }
+    
+    export default UserList;
+
+You'll notice the `render()` method loops over any `data` contained in the prop `userStore` and spits out a list of users -- there's no magic here.
+
+However there IS magic in the line prefixing ES7 decorators:
+
+    @inject('userStore') @observer
+    
+`@observer` tells MobX that this particular component to track which observables are used by `render()` (namely any prop that could be passed in). 
+MobX will then automatically re-render the component when one of these values changes.
+
+`@inject('userStore')` explicitly tells MobX to magically grab the prop `userStore` from _any_ `<Provider />` that is a parent of 
+this component. We defined that a moment ago in `/src/App.js` -- so now it "just exists". 
+
+### `@action`
+
+Like any good implementation of Flux, MobX says that you shouldn't change an observable value unless it's the result of an "action".
+
+In strict mode MobX will throw some fun errors. Notice I turned this on in `/src/stores/Users.js` (line 5) -- try removing 
+the `@action` decorator on line 11 and watch what happens!
+
+### `@computed`
 
 Computed values are awesome! 
 

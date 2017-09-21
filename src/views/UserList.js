@@ -1,11 +1,26 @@
 import React from 'react';
-import {observer} from 'mobx-react';
-import Users from '../stores/Users';
+import {observer, inject} from 'mobx-react';
 
-const UserList = (props) => {
-    return (
-        <div></div>
-    );
-};
+@inject('userStore') @observer
+class UserList extends React.Component {
+    render() {
+        const users = [];
 
-export default observer(UserList, Users);
+        for (let i = 0; i < this.props.userStore.data.length; i++) {
+            let user = this.props.userStore.data[i];
+            users.push(<li key={i}>{user.fullName}</li>);
+        }
+
+        return (
+            <div id="UserList">
+                <h2>Users</h2>
+
+                <ul>
+                    {users}
+                </ul>
+            </div>
+        );
+    }
+}
+
+export default UserList;
