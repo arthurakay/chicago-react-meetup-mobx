@@ -120,8 +120,24 @@ Like any good implementation of Flux, MobX says that you shouldn't change an obs
 In strict mode MobX will throw some fun errors. Notice I turned this on in `/src/stores/Users.js` (line 5) -- try removing 
 the `@action` decorator on line 11 and watch what happens!
 
+    @action addUser() {
+        this.data.push(new User({
+            firstName: 'John',
+            lastName: 'Doe'
+        }));
+    }
+
 ### `@computed`
 
 Computed values are awesome! 
 
 These are values that can be derived from state using a pure function. They will automatically be updated by MobX and optimized for performance.
+
+See `/src/models/User.js`:
+
+    @computed get fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
+Any time that `firstName` or `lastName` for that particular model is updated, `fullName` will automatically re-compute, sending
+signal flares to any observing components that they should re-render.
